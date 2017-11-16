@@ -18,6 +18,7 @@
 #endif  // HAVE_UCONTEXT_T
 
 #include "UnixContext.h"
+#include "UnwindHelpers.h"
 
 #ifdef __APPLE__
 
@@ -559,16 +560,18 @@ bool FindProcInfo(UIntNative controlPC, UIntNative* startAddress, UIntNative* ls
     return true;
 }
 
+
+
 // Virtually unwind stack to the caller of the context specified by the REGDISPLAY
 bool VirtualUnwind(REGDISPLAY* pRegisterSet)
 {
-    unw_context_t unwContext;
-    unw_cursor_t cursor;
+    // unw_context_t unwContext;
+    // unw_cursor_t cursor;
 
-    if (!InitializeUnwindContextAndCursor(pRegisterSet, &cursor, &unwContext))
-    {
-        return false;
-    }
+    // if (!InitializeUnwindContextAndCursor(pRegisterSet, &cursor, &unwContext))
+    // {
+    //     return false;
+    // }
 
     // FreeBSD, NetBSD and OSX appear to do two different things when unwinding
     // 1: If it reaches where it cannot unwind anymore, say a
@@ -580,16 +583,23 @@ bool VirtualUnwind(REGDISPLAY* pRegisterSet)
     // the step
     uintptr_t curPc = pRegisterSet->GetIP();
 
-    int st = unw_step(&cursor);
-    if (st < 0)
+    bool result = UnwindHelpers::StepFrame(curPc, pRegisterSet);
+    if (!result)
     {
+        printf("ZZZZZ STEP FAILED \n");
         return false;
     }
 
-    // Update the REGDISPLAY to reflect the unwind
-    UnwindCursorToRegDisplay(&cursor, &unwContext, pRegisterSet);
+    // int st = unw_step(&cursor);
+    // if (st < 0)
+    // {
+    //     return false;
+    // }
 
-    if (st == 0 && pRegisterSet->GetIP() == curPc)
+    // Update the REGDISPLAY to reflect the unwind
+    // UnwindCursorToRegDisplay(&cursor, &unwContext, pRegisterSet);
+
+    if (pRegisterSet->GetIP() == curPc)
     {
         // TODO: is this correct for CoreRT? Should we return false instead?
         pRegisterSet->SetIP(0);

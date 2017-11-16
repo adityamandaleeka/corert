@@ -113,6 +113,7 @@ else()
   list(APPEND FULL_RUNTIME_SOURCES
     unix/HardwareExceptions.cpp
     unix/UnixContext.cpp
+    unix/UnwindHelpers.cpp
     unix/UnixNativeCodeManager.cpp
     ../libunwind/src/Unwind-EHABI.cpp
     ../libunwind/src/libunwind.cpp

@@ -8,16 +8,19 @@
 #define UNW_STEP_SUCCESS 1
 #define UNW_STEP_END     0
 
-////// fix paths
-#include <libunwind.h>
-#include "../../libunwind/src/config.h"
-#include "../../libunwind/src/Registers.hpp"
-#include "../../libunwind/src/AddressSpace.hpp"
-#include "../../libunwind/src/UnwindCursor.hpp"
-
 #ifdef __APPLE__
 #include <mach-o/getsect.h>
 #endif
+
+#include <regdisplay.h>
+#include "UnwindHelpers.h"
+
+// libunwind headers
+#include <libunwind.h>
+#include <src/config.h>
+#include <src/Registers.hpp>
+#include <src/AddressSpace.hpp>
+#include <src/UnwindCursor.hpp>
 
 using libunwind::Registers_x86_64;
 using libunwind::LocalAddressSpace;
@@ -26,9 +29,6 @@ using libunwind::EHHeaderParser;
 using libunwind::DwarfFDECache;
 using libunwind::DwarfInstructions;
 using libunwind::UnwindInfoSections;
-
-#include "../regdisplay.h"
-#include "UnwindHelpers.h"
 
 
 // typedef LocalAddressSpace::pint_t pint_t;

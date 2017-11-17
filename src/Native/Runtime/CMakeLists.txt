@@ -99,6 +99,7 @@ else()
 
   include_directories(unix)
   include_directories(../libunwind/include)
+  include_directories(../libunwind)
 
   # Disable building _Unwind_XXX style APIs of libunwind, since we don't use them.
   add_definitions(-D_LIBUNWIND_DISABLE_ZERO_COST_APIS=1)

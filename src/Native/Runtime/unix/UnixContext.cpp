@@ -583,6 +583,15 @@ bool VirtualUnwind(REGDISPLAY* pRegisterSet)
     // the step
     uintptr_t curPc = pRegisterSet->GetIP();
 
+    if (curPc == 0)
+    {
+        ///// looks like transition frames on OS X don't have the IP filled in but they do have pIP.
+        curPc = *(pRegisterSet->GetAddrOfIP());
+
+        if (curPc == 0)
+            printf("GOT HEREAAAAA");
+    }
+
     bool result = UnwindHelpers::StepFrame(curPc, pRegisterSet);
     if (!result)
     {

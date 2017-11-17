@@ -135,7 +135,17 @@ LocalAddressSpace _addressSpace;
 //   return false;
 // }
 
-
+#ifdef __APPLE__
+    #include <mach-o/getsect.h>
+    struct dyld_unwind_sections
+    {
+        const struct mach_header*   mh;
+        const void*                 dwarf_section;
+        uintptr_t                   dwarf_section_length;
+        const void*                 compact_unwind_section;
+        uintptr_t                   compact_unwind_section_length;
+    };
+#else 
 
 /// these are used in libunwind
 #if !defined(Elf_Half)
@@ -234,6 +244,7 @@ static int LocateSectionsCallback(struct dl_phdr_info *info, size_t size, void *
 
     return 0;
 }
+#endif
 
 bool DoTheStep(uintptr_t pc, UnwindInfoSections uwInfoSections, REGDISPLAY *regs)
 {
@@ -266,14 +277,40 @@ bool DoTheStep(uintptr_t pc, UnwindInfoSections uwInfoSections, REGDISPLAY *regs
     return true;
 }
 
-bool UnwindHelpers::StepFrame(uintptr_t pc, REGDISPLAY *regs)
+UnwindInfoSections LocateUnwindSections(uintptr_t pc)
 {
     UnwindInfoSections uwInfoSections;
-    dl_iterate_cb_data cb_data = {&uwInfoSections, pc };
 
+#ifdef __APPLE__
+    // On macOS, we can use a dyld function from libSystem in order
+    // to find the unwind sections.
+
+    libunwind::dyld_unwind_sections dyldInfo;
+
+  if (libunwind::_dyld_find_unwind_sections((void *)pc, &dyldInfo))
+    {
+        uwInfoSections.dso_base                      = (uintptr_t)dyldInfo.mh;
+
+        uwInfoSections.dwarf_section                 = (uintptr_t)dyldInfo.dwarf_section;
+        uwInfoSections.dwarf_section_length          = dyldInfo.dwarf_section_length;
+
+        uwInfoSections.compact_unwind_section        = (uintptr_t)dyldInfo.compact_unwind_section;
+        uwInfoSections.compact_unwind_section_length = dyldInfo.compact_unwind_section_length;
+    }
+#else // __APPLE__
+
+    dl_iterate_cb_data cb_data = {&uwInfoSections, pc };
     dl_iterate_phdr(LocateSectionsCallback, &cb_data);
 
-    if (cb_data.sects->dwarf_section == NULL)
+#endif
+
+    return uwInfoSections;
+}
+
+bool UnwindHelpers::StepFrame(uintptr_t pc, REGDISPLAY *regs)
+{
+    UnwindInfoSections uwInfoSections = LocateUnwindSections(pc);
+    if (uwInfoSections.dwarf_section == NULL)
     {
         printf("ZZZZZZZ FAILED TO GET DWARF EH INFO!!!!!\n");
         return false;

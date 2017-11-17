@@ -24,9 +24,7 @@
 
 using libunwind::Registers_x86_64;
 using libunwind::LocalAddressSpace;
-using libunwind::CFI_Parser;
 using libunwind::EHHeaderParser;
-using libunwind::DwarfFDECache;
 using libunwind::DwarfInstructions;
 using libunwind::UnwindInfoSections;
 

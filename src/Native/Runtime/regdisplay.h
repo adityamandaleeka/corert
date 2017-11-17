@@ -83,113 +83,114 @@ struct REGDISPLAY
 
     inline uint64_t getRegister(int regNum) const
     {
-        switch (regNum)
+        switch (regNum) 
         {
-            case LibunwindConstants::UNW_REG_IP:
-                return IP;
-            case LibunwindConstants::UNW_REG_SP:
-                return SP;
-            case LibunwindConstants::UNW_X86_64_RAX:
-                return *pRax;
-            case LibunwindConstants::UNW_X86_64_RDX:
-                return *pRdx;
-            case LibunwindConstants::UNW_X86_64_RCX:
-                return *pRcx;
-            case LibunwindConstants::UNW_X86_64_RBX:
-                return *pRbx;
-            case LibunwindConstants::UNW_X86_64_RSI:
-                return *pRsi;
-            case LibunwindConstants::UNW_X86_64_RDI:
-                return *pRdi;
-            case LibunwindConstants::UNW_X86_64_RBP:
-                return *pRbp;
-            case LibunwindConstants::UNW_X86_64_RSP:
-                return SP;
-            case LibunwindConstants::UNW_X86_64_R8:
-                return *pR8;
-            case LibunwindConstants::UNW_X86_64_R9:
-                return *pR9;
-            case LibunwindConstants::UNW_X86_64_R10:
-                return *pR10;
-            case LibunwindConstants::UNW_X86_64_R11:
-                return *pR11;
-            case LibunwindConstants::UNW_X86_64_R12:
-                return *pR12;
-            case LibunwindConstants::UNW_X86_64_R13:
-                return *pR13;
-            case LibunwindConstants::UNW_X86_64_R14:
-                return *pR14;
-            case LibunwindConstants::UNW_X86_64_R15:
-                return *pR15;
+        case LibunwindConstants::UNW_REG_IP:
+            return IP;
+        case LibunwindConstants::UNW_REG_SP:
+            return SP;
+        case LibunwindConstants::UNW_X86_64_RAX:
+            return *pRax;
+        case LibunwindConstants::UNW_X86_64_RDX:
+            return *pRdx;
+        case LibunwindConstants::UNW_X86_64_RCX:
+            return *pRcx;
+        case LibunwindConstants::UNW_X86_64_RBX:
+            return *pRbx;
+        case LibunwindConstants::UNW_X86_64_RSI:
+            return *pRsi;
+        case LibunwindConstants::UNW_X86_64_RDI:
+            return *pRdi;
+        case LibunwindConstants::UNW_X86_64_RBP:
+            return *pRbp;
+        case LibunwindConstants::UNW_X86_64_RSP:
+            return SP;
+        case LibunwindConstants::UNW_X86_64_R8:
+            return *pR8;
+        case LibunwindConstants::UNW_X86_64_R9:
+            return *pR9;
+        case LibunwindConstants::UNW_X86_64_R10:
+            return *pR10;
+        case LibunwindConstants::UNW_X86_64_R11:
+            return *pR11;
+        case LibunwindConstants::UNW_X86_64_R12:
+            return *pR12;
+        case LibunwindConstants::UNW_X86_64_R13:
+            return *pR13;
+        case LibunwindConstants::UNW_X86_64_R14:
+            return *pR14;
+        case LibunwindConstants::UNW_X86_64_R15:
+            return *pR15;
         }
 
         // Unsupported register requested
         abort();
     }
 
-    inline void setRegister(int regNum, uint64_t value, uint64_t location) {
-      switch (regNum) {
-      case LibunwindConstants::UNW_REG_IP:
-        IP = value;
+    inline void setRegister(int regNum, uint64_t value, uint64_t location)
+    {
+        switch (regNum)
+        {
+        case LibunwindConstants::UNW_REG_IP:
+            IP = value;
+            if (location != 0)
+                pIP = (PTR_PCODE)location;
+                return;
+        case LibunwindConstants::UNW_REG_SP:
+            SP = value;
+            return;
+        case LibunwindConstants::UNW_X86_64_RAX:
+            pRax = (PTR_UIntNative)location;
+            return;
+        case LibunwindConstants::UNW_X86_64_RDX:
+            pRdx = (PTR_UIntNative)location;
+            return;
+        case LibunwindConstants::UNW_X86_64_RCX:
+            pRcx =  (PTR_UIntNative)location;
+            return;
+        case LibunwindConstants::UNW_X86_64_RBX:
+            pRbx =  (PTR_UIntNative)location;
+            return;
+        case LibunwindConstants::UNW_X86_64_RSI:
+            pRsi =  (PTR_UIntNative)location;
+            return;
+        case LibunwindConstants::UNW_X86_64_RDI:
+            pRdi =  (PTR_UIntNative)location;
+            return;
+        case LibunwindConstants::UNW_X86_64_RBP:
+            pRbp =  (PTR_UIntNative)location;
+            return;
+        case LibunwindConstants::UNW_X86_64_RSP:
+            SP = value;
+            return;
+        case LibunwindConstants::UNW_X86_64_R8:
+            pR8 = (PTR_UIntNative)location;
+            return;
+        case LibunwindConstants::UNW_X86_64_R9:
+            pR9 =  (PTR_UIntNative)location;
+            return;
+        case LibunwindConstants::UNW_X86_64_R10:
+            pR10 =  (PTR_UIntNative)location;
+            return;
+        case LibunwindConstants::UNW_X86_64_R11:
+            pR11 =  (PTR_UIntNative)location;
+            return;
+        case LibunwindConstants::UNW_X86_64_R12:
+            pR12 =  (PTR_UIntNative)location;
+            return;
+        case LibunwindConstants::UNW_X86_64_R13:
+            pR13 =  (PTR_UIntNative)location;
+            return;
+        case LibunwindConstants::UNW_X86_64_R14:
+            pR14 =  (PTR_UIntNative)location;
+            return;
+        case LibunwindConstants::UNW_X86_64_R15:
+            pR15 =  (PTR_UIntNative)location;
+            return;
+        }
 
-        if (location != 0)
-          pIP = (PTR_PCODE)location;
-        return;
-      case LibunwindConstants::UNW_REG_SP:
-        SP = value;
-        return;
-      case LibunwindConstants::UNW_X86_64_RAX:
-        pRax = (PTR_UIntNative)location;
-        return;
-      case LibunwindConstants::UNW_X86_64_RDX:
-        pRdx = (PTR_UIntNative)location;
-        return;
-      case LibunwindConstants::UNW_X86_64_RCX:
-        pRcx =  (PTR_UIntNative)location;
-        return;
-      case LibunwindConstants::UNW_X86_64_RBX:
-        pRbx =  (PTR_UIntNative)location;
-        return;
-      case LibunwindConstants::UNW_X86_64_RSI:
-        pRsi =  (PTR_UIntNative)location;
-        return;
-      case LibunwindConstants::UNW_X86_64_RDI:
-        pRdi =  (PTR_UIntNative)location;
-        return;
-      case LibunwindConstants::UNW_X86_64_RBP:
-        pRbp =  (PTR_UIntNative)location;
-        return;
-      case LibunwindConstants::UNW_X86_64_RSP:
-        SP = value;
-        return;
-      case LibunwindConstants::UNW_X86_64_R8:
-        pR8 = (PTR_UIntNative)location;
-        return;
-      case LibunwindConstants::UNW_X86_64_R9:
-        pR9 =  (PTR_UIntNative)location;
-        return;
-      case LibunwindConstants::UNW_X86_64_R10:
-        pR10 =  (PTR_UIntNative)location;
-        return;
-      case LibunwindConstants::UNW_X86_64_R11:
-        pR11 =  (PTR_UIntNative)location;
-        return;
-      case LibunwindConstants::UNW_X86_64_R12:
-        pR12 =  (PTR_UIntNative)location;
-        return;
-      case LibunwindConstants::UNW_X86_64_R13:
-        pR13 =  (PTR_UIntNative)location;
-        return;
-      case LibunwindConstants::UNW_X86_64_R14:
-        pR14 =  (PTR_UIntNative)location;
-        return;
-      case LibunwindConstants::UNW_X86_64_R15:
-        pR15 =  (PTR_UIntNative)location;
-        return;
-      }
-
-      // Unsupported x86_64 register
-      abort();
+        // Unsupported x86_64 register
+        abort();
     }
 
     // N/A for x86_64
@@ -211,6 +212,7 @@ struct REGDISPLAY
         return true;
     }
 
+    // N/A for x86_64
     inline double getFloatRegister(int) const   { abort(); }
     inline   void setFloatRegister(int, double) { abort(); }
     inline double getVectorRegister(int) const  { abort(); }

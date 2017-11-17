@@ -15,6 +15,10 @@
 #include "../../libunwind/src/AddressSpace.hpp"
 #include "../../libunwind/src/UnwindCursor.hpp"
 
+#ifdef __APPLE__
+#include <mach-o/getsect.h>
+#endif
+
 using libunwind::Registers_x86_64;
 using libunwind::LocalAddressSpace;
 using libunwind::CFI_Parser;
@@ -25,6 +29,7 @@ using libunwind::UnwindInfoSections;
 
 #include "../regdisplay.h"
 #include "UnwindHelpers.h"
+
 
 // typedef LocalAddressSpace::pint_t pint_t;
 
@@ -136,7 +141,6 @@ LocalAddressSpace _addressSpace;
 // }
 
 #ifdef __APPLE__
-    #include <mach-o/getsect.h>
     struct dyld_unwind_sections
     {
         const struct mach_header*   mh;
@@ -265,13 +269,12 @@ bool DoTheStep(uintptr_t pc, UnwindInfoSections uwInfoSections, REGDISPLAY *regs
     DwarfInstructions<LocalAddressSpace, REGDISPLAY> dwarfInst;
 
     int stepRet = dwarfInst.stepWithDwarf(_addressSpace, pc, procInfo.unwind_info, *regs);
-    if (stepRet != 1 /* UNW_STEP_SUCCESS */)
+    if (stepRet != UNW_STEP_SUCCESS)
     {
         printf("ZZZZZ STEP FAILED \n");
         return false;
     }
 
-    /////this is done in UnwindCursorToRegDisplay as well
     regs->pIP = PTR_PCODE(regs->SP - sizeof(TADDR));
 
     return true;

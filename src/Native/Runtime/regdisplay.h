@@ -133,9 +133,8 @@ struct REGDISPLAY
         {
         case LibunwindConstants::UNW_REG_IP:
             IP = value;
-            if (location != 0)
-                pIP = (PTR_PCODE)location;
-                return;
+            pIP = (PTR_PCODE)location;
+            return;
         case LibunwindConstants::UNW_REG_SP:
             SP = value;
             return;
@@ -226,10 +225,7 @@ struct REGDISPLAY
     void      setIP(uint64_t value, uint64_t location)
     {
         IP = value;
-        if (location != 0)
-        {
-            pIP = (PTR_PCODE)location;
-        }
+        pIP = (PTR_PCODE)location;
     }
 
     uint64_t  getRBP() const         { return *pRbp; }
